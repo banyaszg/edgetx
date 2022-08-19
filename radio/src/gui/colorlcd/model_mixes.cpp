@@ -29,6 +29,7 @@
 #include "model_curves.h"
 #include "dataconstants.h"
 #include "channel_bar.h"
+#include "usb_joystick.h"
 
 
 #define SET_DIRTY()     storageDirty(EE_MODEL)
@@ -246,6 +247,14 @@ class MixEditWindow : public Page
                           SET_VALUE(mix->speedDown, newValue), 0, PREC1);
     edit->setSuffix("s");
     grid.nextLine();
+
+    // USB Joystick channel
+    {
+      new StaticText(window, grid.getLabelSlot(), STR_USBJOYSTICK_CH, 0, COLOR_THEME_PRIMARY1);
+      auto joystick_mode = new Choice(window, grid.getFieldSlot(), STR_VUSBJOYSTICK_CH, 0, USBJOYS_CH_LAST, GET_SET_DEFAULT(g_model.usbJoystickCh[mixIndex].mode));
+      if (usbJoystickActive()) joystick_mode->disable();
+      grid.nextLine();
+    }
 
     window->setInnerHeight(grid.getWindowHeight());
   }

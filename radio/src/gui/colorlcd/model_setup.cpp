@@ -29,6 +29,7 @@
 #include "libopenui.h"
 #include "storage/modelslist.h"
 #include "algorithm"
+#include "usb_joystick.h"
 
 #if defined(PXX2)
 #include "access_settings.h"
@@ -1706,6 +1707,13 @@ void ModelSetupPage::build(FormWindow * window)
     grid.addWindow(new TrainerModuleWindow(window, {0, grid.getWindowHeight(), LCD_W, 0}));
   }
 
+  // USB Joystick mode
+  {
+    new StaticText(window, grid.getLabelSlot(), STR_USBJOYSTICK_MODE, 0, COLOR_THEME_PRIMARY1);
+    auto joystick_mode = new Choice(window, grid.getFieldSlot(), STR_VUSBJOYSTICK_MODE, 0, USBJOYS_LAST, GET_SET_DEFAULT(g_model.usbJoystickMode));
+    if (usbJoystickActive()) joystick_mode->disable();
+    grid.nextLine();
+  }
 
   window->setInnerHeight(grid.getWindowHeight());
 }

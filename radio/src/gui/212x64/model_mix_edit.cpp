@@ -20,6 +20,7 @@
  */
 
 #include "opentx.h"
+#include "usb_joystick.h"
 
 enum MixFields {
   MIX_FIELD_NAME,
@@ -36,6 +37,7 @@ enum MixFields {
   MIX_FIELD_DELAY_DOWN,
   MIX_FIELD_SLOW_UP,
   MIX_FIELD_SLOW_DOWN,
+  MIX_FIELD_USBJOYSTICK_CH,
   MIX_FIELD_COUNT
 };
 
@@ -84,6 +86,8 @@ void drawOffsetBar(uint8_t x, uint8_t y, MixData * md)
   }
 }
 
+#define USB_JOYSTICK_ROWS                (usbJoystickActive() ? READONLY_ROW : (uint8_t)0) 
+
 void menuModelMixOne(event_t event)
 {
   if (event == EVT_KEY_LONG(KEY_MENU)) {
@@ -97,7 +101,7 @@ void menuModelMixOne(event_t event)
 
   uint8_t old_editMode = s_editMode;
 
-  SUBMENU(STR_MIXES, MIX_FIELD_COUNT, {0, 0, 0, 0, 0, 1, CASE_FLIGHT_MODES((MAX_FLIGHT_MODES-1) | NAVIGATION_LINE_BY_LINE) 0, 0 /*, ...*/});
+  SUBMENU(STR_MIXES, MIX_FIELD_COUNT, {0, 0, 0, 0, 0, 1, CASE_FLIGHT_MODES((MAX_FLIGHT_MODES-1) | NAVIGATION_LINE_BY_LINE) 0, 0, USB_JOYSTICK_ROWS /*, ...*/});
 
   int8_t sub = menuVerticalPosition;
   int8_t editMode = s_editMode;
@@ -188,6 +192,11 @@ void menuModelMixOne(event_t event)
       case MIX_FIELD_SLOW_DOWN:
         md2->speedDown = EDIT_DELAY(y, event, attr, STR_SLOWDOWN, md2->speedDown);
         break;
+        
+      case MIX_FIELD_USBJOYSTICK_CH:
+        g_model.usbJoystickCh[s_currIdx].mode = editChoice(MIXES_2ND_COLUMN, y, STR_USBJOYSTICK_CH, STR_VUSBJOYSTICK_CH, g_model.usbJoystickCh[s_currIdx].mode, 0, USBJOYS_CH_LAST, attr, event);
+        break;
+
     }
   }
 }

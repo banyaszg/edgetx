@@ -23,6 +23,7 @@
 #include "debug.h"
 
 #include "usb_driver.h"
+#include "usb_joystick.h"
 
 extern "C" {
 #include "usb_conf.h"
@@ -81,6 +82,7 @@ void usbStart()
 #if !defined(BOOT)
     case USB_JOYSTICK_MODE:
       // initialize USB as HID device
+      setupUSBJoystick();
       USBD_Init(&USB_OTG_dev, USB_OTG_FS_CORE_ID, &USR_desc, &USBD_HID_cb, &USR_cb);
       break;
 #endif
@@ -120,7 +122,7 @@ bool usbStarted()
 */
 void usbJoystickUpdate()
 {
-  static uint8_t HID_Buffer[HID_IN_PACKET];
+/*  static uint8_t HID_Buffer[HID_IN_PACKET];
 
   // test to se if TX buffer is free
   if (USBD_HID_SendReport(&USB_OTG_dev, 0, 0) == USBD_OK) {
@@ -152,6 +154,12 @@ void usbJoystickUpdate()
 
     }
     USBD_HID_SendReport(&USB_OTG_dev, HID_Buffer, HID_IN_PACKET);
+  }*/
+  
+  // test to se if TX buffer is free
+  if (USBD_HID_SendReport(&USB_OTG_dev, 0, 0) == USBD_OK) {
+    usbReport_t ret = usbReport();
+    USBD_HID_SendReport(&USB_OTG_dev, ret.ptr, ret.size);
   }
 }
 #endif

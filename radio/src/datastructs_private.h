@@ -544,6 +544,14 @@ PACK(struct ModuleData {
 });
 
 /*
+ * USB Joystick channel structure
+ */
+
+PACK(struct USBJoystickChData {
+  uint8_t mode ENUM(USBJoystickCh);
+});
+
+/*
  * Model structure
  */
 
@@ -647,6 +655,8 @@ PACK(struct ModelData {
   int8_t    customThrottleWarningPosition;
   BeepANACenter beepANACenter;
   MixData   mixData[MAX_MIXERS] NO_IDX;
+  uint8_t usbJoystickMode ENUM(USBJoystickMode);
+  USBJoystickChData usbJoystickCh[MAX_OUTPUT_CHANNELS];
   LimitData limitData[MAX_OUTPUT_CHANNELS];
   ExpoData  expoData[MAX_EXPOS] NO_IDX;
 
@@ -687,7 +697,7 @@ PACK(struct ModelData {
   NOBACKUP(int8_t potsWarnPosition[STORAGE_NUM_POTS+STORAGE_NUM_SLIDERS]);
 
   NOBACKUP(TelemetrySensor telemetrySensors[MAX_TELEMETRY_SENSORS];)
-
+  
   TARANIS_PCBX9E_FIELD(uint8_t toplcdTimer)
 
   CUSTOM_SCREENS_DATA

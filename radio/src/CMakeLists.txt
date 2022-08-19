@@ -476,6 +476,7 @@ set(SRC
   model_init.cpp
   serial.cpp
   sbus.cpp
+  usb_joystick.cpp
   )
 
 if(GUI)

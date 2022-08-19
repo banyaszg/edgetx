@@ -21,6 +21,7 @@
 
 #include "opentx.h"
 #include "mixer_scheduler.h"
+#include "usb_joystick.h"
 
 uint8_t g_moduleIdx;
 
@@ -149,6 +150,8 @@ enum MenuModelSetupItems {
 #endif
   ITEM_MODEL_SETUP_TRAINER_CHANNELS,
   ITEM_MODEL_SETUP_TRAINER_PPM_PARAMS,
+
+  ITEM_MODEL_SETUP_USBJOYSTICK_MODE,
   ITEM_MODEL_SETUP_LINES_COUNT
 };
 
@@ -334,6 +337,8 @@ inline uint8_t EXTERNAL_MODULE_TYPE_ROW()
 #define CURRENT_MODULE_EDITED(k)      (k >= ITEM_MODEL_SETUP_EXTERNAL_MODULE_LABEL ? EXTERNAL_MODULE : INTERNAL_MODULE)
 #define CURRENT_RECEIVER_EDITED(k)    (k - (k >= ITEM_MODEL_SETUP_EXTERNAL_MODULE_LABEL ? ITEM_MODEL_SETUP_EXTERNAL_MODULE_PXX2_RECEIVER_1 : ITEM_MODEL_SETUP_INTERNAL_MODULE_PXX2_RECEIVER_1))
 
+#define USB_JOYSTICK_ROWS                (usbJoystickActive() ? READONLY_ROW : (uint8_t)0) 
+
 #if defined(BLUETOOTH)
 void onBluetoothConnectMenu(const char * result)
 {
@@ -437,7 +442,9 @@ void menuModelSetup(event_t event)
       IF_ACCESS_MODULE_RF(EXTERNAL_MODULE, 0),   // Receiver 2
       IF_ACCESS_MODULE_RF(EXTERNAL_MODULE, 0),   // Receiver 3
 
-    TRAINER_ROWS
+    TRAINER_ROWS,
+    
+    USB_JOYSTICK_ROWS
   });
 
   MENU_CHECK(menuTabModel, MENU_MODEL_SETUP, ITEM_MODEL_SETUP_LINES_COUNT);
@@ -1729,6 +1736,10 @@ void menuModelSetup(event_t event)
         modelSetupModulePxx2ReceiverLine(CURRENT_MODULE_EDITED(k), CURRENT_RECEIVER_EDITED(k), y, event, attr);
         break;
 #endif
+
+      case ITEM_MODEL_SETUP_USBJOYSTICK_MODE:
+        g_model.usbJoystickMode = editChoice(MODEL_SETUP_2ND_COLUMN, y, STR_USBJOYSTICK_MODE, STR_VUSBJOYSTICK_MODE, g_model.usbJoystickMode, 0, USBJOYS_LAST, attr, event);
+        break;
     }
   }
 

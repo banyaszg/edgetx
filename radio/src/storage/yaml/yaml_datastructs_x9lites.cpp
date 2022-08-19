@@ -100,6 +100,32 @@ const struct YamlIdStr enum_MixerMultiplex[] = {
   {  MLTPX_REPL, "REPL"  },
   {  0, NULL  }
 };
+const struct YamlIdStr enum_USBJoystickMode[] = {
+  {  USBJOYS_JOYSTICK, "JOYSTICK"  },
+  {  USBJOYS_GAMEPAD, "GAMEPAD"  },
+  {  USBJOYS_MULTIAXIS, "MULTIAXIS"  },
+  {  0, NULL  }
+};
+const struct YamlIdStr enum_USBJoystickCh[] = {
+  {  USBJOYS_CH_NONE, "CH_NONE"  },
+  {  USBJOYS_CH_PUSHBTN, "CH_PUSHBTN"  },
+  {  USBJOYS_CH_SWITCH_2S, "CH_SWITCH_2S"  },
+  {  USBJOYS_CH_SWITCH_3S, "CH_SWITCH_3S"  },
+  {  USBJOYS_CH_X_AXIS, "CH_X_AXIS"  },
+  {  USBJOYS_CH_Y_AXIS, "CH_Y_AXIS"  },
+  {  USBJOYS_CH_Z_AXIS, "CH_Z_AXIS"  },
+  {  USBJOYS_CH_RX_AXIS, "CH_RX_AXIS"  },
+  {  USBJOYS_CH_RY_AXIS, "CH_RY_AXIS"  },
+  {  USBJOYS_CH_RZ_AXIS, "CH_RZ_AXIS"  },
+  {  USBJOYS_CH_SLIDER, "CH_SLIDER"  },
+  {  USBJOYS_CH_DIAL, "CH_DIAL"  },
+  {  USBJOYS_CH_WHEEL, "CH_WHEEL"  },
+  {  USBJOYS_CH_SIM_AILERON, "CH_SIM_AILERON"  },
+  {  USBJOYS_CH_SIM_ELEVATOR, "CH_SIM_ELEVATOR"  },
+  {  USBJOYS_CH_SIM_RUDDER, "CH_SIM_RUDDER"  },
+  {  USBJOYS_CH_SIM_THROTTLE, "CH_SIM_THROTTLE"  },
+  {  0, NULL  }
+};
 const struct YamlIdStr enum_MixSources[] = {
   {  MIXSRC_NONE, "NONE"  },
   {  MIXSRC_Rud, "Rud"  },
@@ -402,7 +428,7 @@ static const struct YamlNode struct_RadioData[] = {
   YAML_STRING("bluetoothName", 10),
   YAML_STRING("ownerRegistrationID", 8),
   YAML_SIGNED( "uartSampleMode", 2 ),
-  YAML_PADDING( 5 ),
+  YAML_PADDING( 6 ),
   YAML_END
 };
 static const struct YamlNode struct_unsigned_8[] = {
@@ -450,6 +476,11 @@ static const struct YamlNode struct_MixData[] = {
   YAML_UNSIGNED( "speedUp", 8 ),
   YAML_UNSIGNED( "speedDown", 8 ),
   YAML_STRING("name", 6),
+  YAML_END
+};
+static const struct YamlNode struct_USBJoystickChData[] = {
+  YAML_IDX,
+  YAML_ENUM("mode", 8, enum_USBJoystickCh),
   YAML_END
 };
 static const struct YamlNode struct_LimitData[] = {
@@ -818,6 +849,8 @@ static const struct YamlNode struct_ModelData[] = {
   YAML_SIGNED( "customThrottleWarningPosition", 8 ),
   YAML_UNSIGNED( "beepANACenter", 16 ),
   YAML_ARRAY("mixData", 160, 64, struct_MixData, NULL),
+  YAML_ENUM("usbJoystickMode", 8, enum_USBJoystickMode),
+  YAML_ARRAY("usbJoystickCh", 8, 32, struct_USBJoystickChData, NULL),
   YAML_ARRAY("limitData", 88, 32, struct_LimitData, NULL),
   YAML_ARRAY("expoData", 136, 64, struct_ExpoData, NULL),
   YAML_ARRAY("curves", 32, 32, struct_CurveHeader, NULL),

@@ -78,6 +78,25 @@ void setDefaultGVars()
 #endif
 }
 
+void setUSBJoystickDefaults()
+{
+  TRACE("setUSBJoystickDefaults");
+  g_model.usbJoystickMode = USBJOYS_GAMEPAD;
+  if (MAX_OUTPUT_CHANNELS >= 8) {  
+    g_model.usbJoystickCh[0].mode = USBJOYS_CH_X_AXIS;
+    g_model.usbJoystickCh[1].mode = USBJOYS_CH_Y_AXIS;
+    g_model.usbJoystickCh[2].mode = USBJOYS_CH_Z_AXIS;
+    g_model.usbJoystickCh[3].mode = USBJOYS_CH_RX_AXIS;
+    g_model.usbJoystickCh[4].mode = USBJOYS_CH_RY_AXIS;
+    g_model.usbJoystickCh[5].mode = USBJOYS_CH_RZ_AXIS;
+    g_model.usbJoystickCh[6].mode = USBJOYS_CH_SLIDER;
+    g_model.usbJoystickCh[7].mode = USBJOYS_CH_SLIDER;
+  }
+  for (int i = 8; i < MAX_OUTPUT_CHANNELS; i++) {
+    g_model.usbJoystickCh[i].mode = USBJOYS_CH_PUSHBTN;
+  }
+}
+
 void setVendorSpecificModelDefaults(uint8_t id)
 {
 #if defined(FRSKY_RELEASE)
@@ -111,6 +130,7 @@ void applyDefaultTemplate()
   setDefaultInputs();
   setDefaultMixes();
   setDefaultGVars();
+  setUSBJoystickDefaults();
 
   setDefaultModelRegistrationID();
 

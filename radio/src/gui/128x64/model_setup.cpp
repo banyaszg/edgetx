@@ -21,6 +21,7 @@
 
 #include "opentx.h"
 #include "mixer_scheduler.h"
+#include "usb_joystick.h"
 
 #if !defined(EEPROM)
 #include "storage/sdcard_common.h"
@@ -189,6 +190,8 @@ enum MenuModelSetupItems {
   ITEM_MODEL_SETUP_TRAINER_CHANNELS,
   ITEM_MODEL_SETUP_TRAINER_PPM_PARAMS,
 #endif
+
+  ITEM_MODEL_SETUP_USBJOYSTICK_MODE,
   ITEM_MODEL_SETUP_LINES_COUNT
 };
 
@@ -315,6 +318,8 @@ void onModelAntennaSwitchConfirm(const char * result)
 #else
   #define TRAINER_ROWS
 #endif
+
+#define USB_JOYSTICK_ROWS                (usbJoystickActive() ? READONLY_ROW : (uint8_t)0) 
 
 #if defined(BLUETOOTH)
 void onBluetoothConnectMenu(const char * result)
@@ -468,7 +473,9 @@ void menuModelSetup(event_t event)
 
     EXTRA_MODULE_ROWS
 
-    TRAINER_ROWS
+    TRAINER_ROWS,
+    
+    USB_JOYSTICK_ROWS
   });
 
   MENU_CHECK(menuTabModel, MENU_MODEL_SETUP, HEADER_LINE + ITEM_MODEL_SETUP_LINES_COUNT);
@@ -2015,6 +2022,10 @@ void menuModelSetup(event_t event)
         }
         break;
 #endif
+
+      case ITEM_MODEL_SETUP_USBJOYSTICK_MODE:
+        g_model.usbJoystickMode = editChoice(MODEL_SETUP_2ND_COLUMN, y, STR_USBJOYSTICK_MODE, STR_VUSBJOYSTICK_MODE, g_model.usbJoystickMode, 0, USBJOYS_LAST, attr, event);
+        break;
     }
   }
 

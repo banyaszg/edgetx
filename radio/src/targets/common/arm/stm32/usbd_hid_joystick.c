@@ -22,6 +22,7 @@
 #include "usbd_desc.h"
 #include "usbd_hid_core.h"
 #include "usbd_req.h"
+#include "usb_joystick.h"
 
 /** @addtogroup STM32_USB_OTG_DEVICE_LIBRARY
   * @{
@@ -109,7 +110,7 @@ static uint8_t  USBD_HID_DataIn (void  *pdev, uint8_t epnum);
     uint8_t S2; //analog value, mapped to channel 8
   }
 */ 
-__ALIGN_BEGIN static const uint8_t HID_JOYSTICK_ReportDesc[] __ALIGN_END =
+/*__ALIGN_BEGIN static const uint8_t HID_JOYSTICK_ReportDesc[] __ALIGN_END =
 {
     0x05, 0x01,                    //     USAGE_PAGE (Generic Desktop)
     0x09, 0x05,                    //     USAGE (Game Pad)
@@ -139,7 +140,7 @@ __ALIGN_BEGIN static const uint8_t HID_JOYSTICK_ReportDesc[] __ALIGN_END =
     0x81, 0x02,                    //         INPUT (Data,Var,Abs)
     0xc0,                          //       END_COLLECTION
     0xc0                           //     END_COLLECTION
-};
+};*/
 
 
 /** @defgroup USBD_HID_Private_Variables
@@ -191,7 +192,7 @@ __ALIGN_BEGIN static uint32_t  USBD_HID_IdleState __ALIGN_END = 0;
   #endif
 #endif /* USB_OTG_HS_INTERNAL_DMA_ENABLED */ 
 /* USB HID device Configuration Descriptor */
-__ALIGN_BEGIN static const uint8_t USBD_HID_CfgDesc[USB_HID_CONFIG_DESC_SIZ] __ALIGN_END =
+__ALIGN_BEGIN static /*const*/ uint8_t USBD_HID_CfgDesc[USB_HID_CONFIG_DESC_SIZ] __ALIGN_END =
 {
   0x09, /* bLength: Configuration Descriptor size */
   USB_CONFIGURATION_DESCRIPTOR_TYPE, /* bDescriptorType: Configuration */
@@ -225,7 +226,7 @@ __ALIGN_BEGIN static const uint8_t USBD_HID_CfgDesc[USB_HID_CONFIG_DESC_SIZ] __A
   0x00,         /*bCountryCode: Hardware target country*/
   0x01,         /*bNumDescriptors: Number of HID class descriptors to follow*/
   0x22,         /*bDescriptorType*/
-  sizeof(HID_JOYSTICK_ReportDesc),/*wItemLength: Total length of Report descriptor*/
+  /*sizeof(HID_JOYSTICK_ReportDesc)*/ 0,/*wItemLength: Total length of Report descriptor*/
   0x00,
   /******************** Descriptor of Mouse endpoint ********************/
   /* 27 */
@@ -262,7 +263,6 @@ static uint8_t ReportSent;
 static uint8_t  USBD_HID_Init (void  *pdev, 
                                uint8_t cfgidx)
 {
-  
   /* Open EP IN */
   DCD_EP_Open(pdev,
               HID_IN_EP,
@@ -349,8 +349,11 @@ static uint8_t  USBD_HID_Setup (void  *pdev,
     case USB_REQ_GET_DESCRIPTOR: 
       if( req->wValue >> 8 == HID_REPORT_DESC)
       {
-        len = MIN(sizeof(HID_JOYSTICK_ReportDesc) , req->wLength);
-        pbuf = HID_JOYSTICK_ReportDesc; // wiiccReportDescriptor; //
+        /*len = MIN(sizeof(HID_JOYSTICK_ReportDesc) , req->wLength);
+        pbuf = HID_JOYSTICK_ReportDesc; // wiiccReportDescriptor; //*/
+        struct usbReport_t ret = usbReportDesc();
+        len = MIN(ret.size, req->wLength);
+        pbuf = ret.ptr;
       }
       else if( req->wValue >> 8 == HID_DESCRIPTOR_TYPE)
       {
@@ -414,6 +417,9 @@ uint8_t USBD_HID_SendReport(USB_OTG_CORE_HANDLE  *pdev, uint8_t * report, uint16
   */
 static const uint8_t  *USBD_HID_GetCfgDesc (uint8_t speed, uint16_t *length)
 {
+  struct usbReport_t ret = usbReportDesc();
+  USBD_HID_CfgDesc[25] = ret.size;
+        
   *length = sizeof (USBD_HID_CfgDesc);
   return USBD_HID_CfgDesc;
 }
