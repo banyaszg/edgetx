@@ -84,6 +84,12 @@
 #define LEN_USBMODES                   TR("\007", "\011")
 #define TR_USBMODES                    TR("Zeptat\0""Joyst\0 ""SDkarta""Serial\0", "Zeptat se""Joystick\0""Úložiště\0""Serial\0  ")
 
+#define LEN_VUSBJOYSTICK_MODE          TR("\006", "\011")
+#define TR_VUSBJOYSTICK_MODE           TR("Joyst\0""GPad\0 ""MAxis\0", "Joystick\0""Gamepad\0 ""MultiAxis")
+
+#define LEN_VUSBJOYSTICK_CH            "\007"
+#define TR_VUSBJOYSTICK_CH             "none\0  ""pushBtn""switch2""switch3""X\0     ""Y\0     ""Z\0     ""rotX\0  ""rotY\0  ""rotZ\0  ""slider\0""dial\0  ""wheel\0 ""ail\0   ""ele\0   ""rud\0   ""thr\0   "
+
 #define LEN_JACK_MODES                  "\007"
 #define TR_JACK_MODES                   "Zeptat\0""Audio\0 ""Trenér"
 
@@ -910,6 +916,8 @@
 #define TR_COUNTRY_CODE                 "Kód regionu"
 #define TR_USBMODE                     "Režim USB"
 #define TR_JACK_MODE                    "Režim Jack"
+#define TR_USBJOYSTICK_MODE            "USBJ mode"
+#define TR_USBJOYSTICK_CH              "USBJ mode"
 #define TR_VOICE_LANGUAGE                   "Jazyk hlasu"
 #define TR_UNITS_SYSTEM                 "Jednotky"
 #define TR_EDIT                        "Upravit"

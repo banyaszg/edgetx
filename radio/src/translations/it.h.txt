@@ -86,6 +86,12 @@
 #define LEN_USBMODES           TR("\006", "\010")
 #define TR_USBMODES            TR("Chied\0""Joyst\0""SDCard""Serial", "Chiedi\0 ""Joystick""Storage\0""Seriale\0 ")
 
+#define LEN_VUSBJOYSTICK_MODE          TR("\006", "\011")
+#define TR_VUSBJOYSTICK_MODE           TR("Joyst\0""GPad\0 ""MAxis\0", "Joystick\0""Gamepad\0 ""MultiAxis")
+
+#define LEN_VUSBJOYSTICK_CH            "\007"
+#define TR_VUSBJOYSTICK_CH             "none\0  ""pushBtn""switch2""switch3""X\0     ""Y\0     ""Z\0     ""rotX\0  ""rotY\0  ""rotZ\0  ""slider\0""dial\0  ""wheel\0 ""ail\0   ""ele\0   ""rud\0   ""thr\0   "
+
 #define LEN_MODULE_PROTOCOLS   "\004"
 #define TR_MODULE_PROTOCOLS    "OFF\0""PPM\0""XJT\0""XJT2""DSM2""CRSF""MULT""R9M\0""R9M2""SBUS"
 
@@ -934,6 +940,8 @@
 #define TR_COUNTRY_CODE         TR("Cod. Paese", "Codice del Paese")
 #define TR_USBMODE             "Modo USB"
 #define TR_JACK_MODE            "Modo JACK"
+#define TR_USBJOYSTICK_MODE            "USBJ mode"
+#define TR_USBJOYSTICK_CH              "USBJ mode"
 #define TR_VOICE_LANGUAGE           "Lingua vocale"
 #define TR_UNITS_SYSTEM         "Unità"
 #define TR_EDIT                "Modifica"
