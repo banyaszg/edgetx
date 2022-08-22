@@ -31,13 +31,11 @@ uint8_t _hidReport[MAX_HID_REPORT] = { };
 uint8_t _hidReportSize = 0;
 
 static uint8_t _usbJoystickChannels[MAX_OUTPUT_CHANNELS] = { };
-static uint8_t _usbJoystickPushBtnCount = 0;
-static uint8_t _usbJoystickSwitch2sCount = 0;
-static uint8_t _usbJoystickSwitch3sCount = 0;
+static uint8_t _usbJoystickSwitchCount = 0;
 static uint8_t _usbJoystickAxisCount = 0;
 
 static const uint8_t _usbJoystickUniqueTypes[USBJOYS_CH_LAST + 1] = 
-  { 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1, 1, 1, 1 };
+  { 0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1, 1, 1, 1 };
 
 int usbJoystickActive()
 {
@@ -63,9 +61,9 @@ int isUSBJoystickChannelFree(int except_idx, uint8_t id)
 int setupUSBJoystick()
 {
   static const uint8_t axisTypes[USBJOYS_CH_LAST + 1] = 
-    { 0, 0, 0, 0,    1,    1,    1,    1,    1,    1,    1,    1,    1,    2,    2,    2,    2 };
+    { 0, 0,    1,    1,    1,    1,    1,    1,    1,    1,    1,    2,    2,    2,    2 };
   static const uint8_t axisTypeCodes[USBJOYS_CH_LAST + 1] = 
-    { 0, 0, 0, 0, 0x30, 0x31, 0x32, 0x33, 0x34, 0x35, 0x36, 0x37, 0x38, 0xb0, 0xb8, 0xba, 0xbb };
+    { 0, 0, 0x30, 0x31, 0x32, 0x33, 0x34, 0x35, 0x36, 0x37, 0x38, 0xb0, 0xb8, 0xba, 0xbb };
   
   static uint8_t oldHIDReportDesc[MAX_HID_REPORTDESC] = { };
   static uint8_t oldHIDReportDescSize = 0;
@@ -80,9 +78,7 @@ int setupUSBJoystick()
   memset(_hidReport, 0, MAX_HID_REPORT);
   _hidReportSize = 0;
   memset(_usbJoystickChannels, 0, MAX_OUTPUT_CHANNELS);
-  _usbJoystickPushBtnCount = 0;
-  _usbJoystickSwitch2sCount = 0;
-  _usbJoystickSwitch3sCount = 0;
+  _usbJoystickSwitchCount = 0;
   _usbJoystickAxisCount = 0;
   
   uint8_t genAxisCount = 0;
@@ -91,10 +87,15 @@ int setupUSBJoystick()
   // sort channels by type
   uint8_t typeCount[USBJOYS_CH_LAST + 1] = { };
   uint8_t typeIx[USBJOYS_CH_LAST + 1] = { };
+  uint8_t btnBits = 0;
   uint8_t mode = 0;
   for (uint8_t i = 0; i < MAX_OUTPUT_CHANNELS; i++) {
     mode = g_model.usbJoystickCh[i].mode;
     if ((mode > USBJOYS_CH_NONE) && (mode <=  USBJOYS_CH_LAST)) {
+      if (mode == USBJOYS_CH_SWITCH) {
+          btnBits += g_model.usbJoystickCh[i].switch_pos + 1;
+      }
+
       if (_usbJoystickUniqueTypes[mode]) {
         // only one for these types
         typeCount[mode] = 1;
@@ -122,9 +123,7 @@ int setupUSBJoystick()
   }
 
   // store counts  
-  _usbJoystickPushBtnCount = typeCount[USBJOYS_CH_PUSHBTN];
-  _usbJoystickSwitch2sCount = typeCount[USBJOYS_CH_SWITCH_2S];
-  _usbJoystickSwitch3sCount = typeCount[USBJOYS_CH_SWITCH_3S];
+  _usbJoystickSwitchCount = typeCount[USBJOYS_CH_SWITCH];
   for (uint8_t i = 0; i <= USBJOYS_CH_LAST; i++) {
     if (axisTypes[i] > 0) {
       _usbJoystickAxisCount += typeCount[i];
@@ -137,7 +136,6 @@ int setupUSBJoystick()
   // generate report desc
   
   // button (bits) calculations
-  uint8_t btnBits = _usbJoystickPushBtnCount + (_usbJoystickSwitch2sCount * 2) + (_usbJoystickSwitch3sCount * 3);
   uint8_t btnPaddingBits = 8 - (btnBits % 8);
   if (btnPaddingBits == 8) btnPaddingBits = 0;
   
@@ -312,40 +310,39 @@ extern "C" struct usbReport_t usbReportDesc()
   return res;
 }
 
-void addBitToReport(uint8_t val, uint8_t &bitcnt, uint8_t &bytecnt)
-{
-  if(val) _hidReport[bytecnt] |= 1 << bitcnt;
-  bitcnt++;
-  while (bitcnt >= 8) { bytecnt++; bitcnt -= 8; }
-}
-
 void usbStateUpdate()
 {
   uint8_t rbitcnt = 0;
   uint8_t rcnt = 0;
   uint8_t chcnt = 0;
-  uint8_t val = 0;
+
+  uint16_t swpos = 0;
+  uint16_t swval = 0;
+  uint8_t bitsh = 0;
 
   memset(_hidReport, 0, MAX_HID_REPORT);
 
-  for (uint8_t i = 0; i < _usbJoystickPushBtnCount; i++) {
-    val = (channelOutputs[_usbJoystickChannels[chcnt]] > 0) ? 1 : 0;
-    addBitToReport(val, rbitcnt, rcnt);
-    chcnt++;
-  }
-  for (uint8_t i = 0; i < _usbJoystickSwitch2sCount; i++) {
-    val = (channelOutputs[_usbJoystickChannels[chcnt]] > 0) ? 0b10 : 0b01;
-    addBitToReport(val & 1, rbitcnt, rcnt);
-    addBitToReport(val & 2, rbitcnt, rcnt);
-    chcnt++;
-  }
-  for (uint8_t i = 0; i < _usbJoystickSwitch3sCount; i++) {
-    val = 0b010;
-    if (channelOutputs[_usbJoystickChannels[chcnt]] < 0) val = 0b001;
-    else if (channelOutputs[_usbJoystickChannels[chcnt]] > 0) val = 0b100;
-    addBitToReport(val & 1, rbitcnt, rcnt);
-    addBitToReport(val & 2, rbitcnt, rcnt);
-    addBitToReport(val & 4, rbitcnt, rcnt);
+  for (uint8_t i = 0; i < _usbJoystickSwitchCount; i++) {
+    int16_t value = channelOutputs[_usbJoystickChannels[chcnt]] + 1024;
+    if ( value > 2047 ) value = 2047;
+    else if ( value < 0 ) value = 0;
+
+    swpos = g_model.usbJoystickCh[_usbJoystickChannels[chcnt]].switch_pos + 1;
+
+    if (swpos == 1) {
+      if (value > 1024) {
+        _hidReport[rcnt] |= 1 << rbitcnt;
+      }
+      rbitcnt++;
+    } else {
+      swval = static_cast<uint16_t>(value) / (2048 / swpos);
+      if (swval >= swpos) swval = swpos - 1;
+      bitsh = swval + rbitcnt;
+      _hidReport[rcnt + (bitsh / 8)] |= 1 << (bitsh % 8);
+      rbitcnt += swpos;
+    }
+    while (rbitcnt >= 8) { rcnt++; rbitcnt -= 8; }
+
     chcnt++;
   }
   if (rbitcnt > 0) {

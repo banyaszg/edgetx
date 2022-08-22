@@ -154,8 +154,11 @@ extern const char STR_VFAILSAFE[];
 
 extern const char STR_USBJOYSTICK_MODE[];
 extern const char STR_VUSBJOYSTICK_MODE[];
+extern const char STR_USBJOYSTICK_CH_LABEL[];
 extern const char STR_USBJOYSTICK_CH[];
 extern const char STR_VUSBJOYSTICK_CH[];
+extern const char STR_USBJOYSTICK_CH_SWPOS[];
+extern const char STR_VUSBJOYSTICK_CH_SWPOS[];
 
 extern const char STR_FONT_SIZES[];
 extern const char STR_VTRAINERMODES[];

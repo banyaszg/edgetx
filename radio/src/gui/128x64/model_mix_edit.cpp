@@ -37,7 +37,9 @@ enum MixFields {
   MIX_FIELD_DELAY_DOWN,
   MIX_FIELD_SLOW_UP,
   MIX_FIELD_SLOW_DOWN,
+  MIX_FIELD_USBJOYSTICK_CH_LABEL,
   MIX_FIELD_USBJOYSTICK_CH,
+  MIX_FIELD_USBJOYSTICK_CH_PARAM,
   MIX_FIELD_COUNT
 };
 
@@ -86,7 +88,8 @@ void drawOffsetBar(uint8_t x, uint8_t y, MixData * md)
   }
 }
 
-#define USB_JOYSTICK_ROWS                (usbJoystickActive() ? READONLY_ROW : (uint8_t)0) 
+#define USB_JOYSTICK_ROWS                LABEL(USBJoystick), (usbJoystickActive() ? READONLY_ROW : (uint8_t)0), \
+    (usbJoystickActive() ? READONLY_ROW : ((g_model.usbJoystickCh[s_currIdx].mode == USBJOYS_CH_SWITCH) ? (uint8_t)0 : HIDDEN_ROW))
 
 void menuModelMixOne(event_t event)
 {
@@ -111,7 +114,7 @@ void menuModelMixOne(event_t event)
 
   uint8_t old_editMode = s_editMode;
   
-  SUBMENU(STR_MIXES, MIX_FIELD_COUNT, {0, 0, 0, 0, 0, 1, CASE_FLIGHT_MODES((MAX_FLIGHT_MODES-1) | NAVIGATION_LINE_BY_LINE) 0, 0, USB_JOYSTICK_ROWS /*, ...*/});
+  SUBMENU(STR_MIXES, MIX_FIELD_COUNT, {0, 0, 0, 0, 0, 1, CASE_FLIGHT_MODES((MAX_FLIGHT_MODES-1) | NAVIGATION_LINE_BY_LINE) 0, 0, 0, 0, 0, 0, 0, USB_JOYSTICK_ROWS });
   
   int8_t sub = menuVerticalPosition;
   int8_t editMode = s_editMode;
@@ -209,8 +212,16 @@ void menuModelMixOne(event_t event)
         md2->speedDown = EDIT_DELAY(0, y, event, attr, STR_SLOWDOWN, md2->speedDown);
         break;
         
+      case MIX_FIELD_USBJOYSTICK_CH_LABEL:
+        lcdDrawTextAlignedLeft(y, STR_USBJOYSTICK_CH_LABEL);
+        break;
+
       case MIX_FIELD_USBJOYSTICK_CH:
-        g_model.usbJoystickCh[s_currIdx].mode = editChoice(MIXES_2ND_COLUMN, y, STR_USBJOYSTICK_CH, STR_VUSBJOYSTICK_CH, g_model.usbJoystickCh[s_currIdx].mode, 0, USBJOYS_CH_LAST, attr, event);
+        g_model.usbJoystickCh[s_currIdx].mode = editChoice(MIXES_2ND_COLUMN, y, INDENT TR_USBJOYSTICK_CH, STR_VUSBJOYSTICK_CH, g_model.usbJoystickCh[s_currIdx].mode, 0, USBJOYS_CH_LAST, attr, event);
+        break;
+
+      case MIX_FIELD_USBJOYSTICK_CH_PARAM:
+        g_model.usbJoystickCh[s_currIdx].switch_pos = editChoice(MIXES_2ND_COLUMN, y, INDENT TR_USBJOYSTICK_CH_SWPOS, STR_VUSBJOYSTICK_CH_SWPOS, g_model.usbJoystickCh[s_currIdx].switch_pos, 0, 7, attr, event);
         break;
     }
   }

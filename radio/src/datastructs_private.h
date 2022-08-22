@@ -548,7 +548,8 @@ PACK(struct ModuleData {
  */
 
 PACK(struct USBJoystickChData {
-  uint8_t mode ENUM(USBJoystickCh);
+  uint8_t mode:5 ENUM(USBJoystickCh);
+  uint8_t switch_pos:3;
 });
 
 /*

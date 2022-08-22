@@ -92,7 +92,10 @@
 #define TR_VUSBJOYSTICK_MODE           TR("Joyst\0""GPad\0 ""MAxis\0", "Joystick\0""Gamepad\0 ""MultiAxis")
 
 #define LEN_VUSBJOYSTICK_CH            "\007"
-#define TR_VUSBJOYSTICK_CH             "none\0  ""pushBtn""switch2""switch3""X\0     ""Y\0     ""Z\0     ""rotX\0  ""rotY\0  ""rotZ\0  ""slider\0""dial\0  ""wheel\0 ""ail\0   ""ele\0   ""rud\0   ""thr\0   "
+#define TR_VUSBJOYSTICK_CH             "none\0  ""switch\0""X\0     ""Y\0     ""Z\0     ""rotX\0  ""rotY\0  ""rotZ\0  ""slider\0""dial\0  ""wheel\0 ""ail\0   ""ele\0   ""rud\0   ""thr\0   "
+
+#define LEN_VUSBJOYSTICK_CH_SWPOS      "\007"
+#define TR_VUSBJOYSTICK_CH_SWPOS       "pushBtn""2P\0    ""3P\0    ""4P\0    ""5P\0    ""6P\0    ""7P\0    ""8P\0    "
 
 #define LEN_JACK_MODES                  "\007"
 #define TR_JACK_MODES                   "Demander""Audio\0 ""Ecolage"
@@ -940,7 +943,9 @@
 #define TR_USBMODE                     "Mode USB"
 #define TR_JACK_MODE                    "Mode Jack"
 #define TR_USBJOYSTICK_MODE            "USBJ mode"
-#define TR_USBJOYSTICK_CH              "USBJ mode"
+#define TR_USBJOYSTICK_CH_LABEL        "USB Joystick"
+#define TR_USBJOYSTICK_CH              "Mode"
+#define TR_USBJOYSTICK_CH_SWPOS        "Switch pos"
 #define TR_VOICE_LANGUAGE                   TR("Langue voix", "Langue annonces vocales")
 #define TR_UNITS_SYSTEM                 "Unités"
 #define TR_EDIT                        "Editer"

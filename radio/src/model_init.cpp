@@ -93,7 +93,8 @@ void setUSBJoystickDefaults()
     g_model.usbJoystickCh[7].mode = USBJOYS_CH_SLIDER;
   }
   for (int i = 8; i < MAX_OUTPUT_CHANNELS; i++) {
-    g_model.usbJoystickCh[i].mode = USBJOYS_CH_PUSHBTN;
+    g_model.usbJoystickCh[i].mode = USBJOYS_CH_SWITCH;
+    g_model.usbJoystickCh[i].switch_pos = 0;
   }
 }
 

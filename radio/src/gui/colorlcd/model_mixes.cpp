@@ -250,9 +250,15 @@ class MixEditWindow : public Page
 
     // USB Joystick channel
     {
+      new Subtitle(window, grid.getLineSlot(), STR_USBJOYSTICK_CH_LABEL, 0, COLOR_THEME_PRIMARY1);
+      grid.nextLine();
+
       new StaticText(window, grid.getLabelSlot(), STR_USBJOYSTICK_CH, 0, COLOR_THEME_PRIMARY1);
       auto joystick_mode = new Choice(window, grid.getFieldSlot(), STR_VUSBJOYSTICK_CH, 0, USBJOYS_CH_LAST, GET_SET_DEFAULT(g_model.usbJoystickCh[mixIndex].mode));
-      if (usbJoystickActive()) joystick_mode->disable();
+      grid.nextLine();
+
+      new StaticText(window, grid.getLabelSlot(), STR_USBJOYSTICK_CH_SWPOS, 0, COLOR_THEME_PRIMARY1);
+      auto joystick_swpos = new Choice(window, grid.getFieldSlot(), STR_VUSBJOYSTICK_CH_SWPOS, 0, 7, GET_SET_DEFAULT(g_model.usbJoystickCh[mixIndex].switch_pos));
       grid.nextLine();
     }
 

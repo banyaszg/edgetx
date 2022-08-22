@@ -1711,7 +1711,6 @@ void ModelSetupPage::build(FormWindow * window)
   {
     new StaticText(window, grid.getLabelSlot(), STR_USBJOYSTICK_MODE, 0, COLOR_THEME_PRIMARY1);
     auto joystick_mode = new Choice(window, grid.getFieldSlot(), STR_VUSBJOYSTICK_MODE, 0, USBJOYS_LAST, GET_SET_DEFAULT(g_model.usbJoystickMode));
-    if (usbJoystickActive()) joystick_mode->disable();
     grid.nextLine();
   }
 

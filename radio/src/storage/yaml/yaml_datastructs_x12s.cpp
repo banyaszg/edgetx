@@ -118,9 +118,7 @@ const struct YamlIdStr enum_USBJoystickMode[] = {
 };
 const struct YamlIdStr enum_USBJoystickCh[] = {
   {  USBJOYS_CH_NONE, "CH_NONE"  },
-  {  USBJOYS_CH_PUSHBTN, "CH_PUSHBTN"  },
-  {  USBJOYS_CH_SWITCH_2S, "CH_SWITCH_2S"  },
-  {  USBJOYS_CH_SWITCH_3S, "CH_SWITCH_3S"  },
+  {  USBJOYS_CH_SWITCH, "CH_SWITCH"  },
   {  USBJOYS_CH_X_AXIS, "CH_X_AXIS"  },
   {  USBJOYS_CH_Y_AXIS, "CH_Y_AXIS"  },
   {  USBJOYS_CH_Z_AXIS, "CH_Z_AXIS"  },
@@ -536,7 +534,8 @@ static const struct YamlNode struct_MixData[] = {
 };
 static const struct YamlNode struct_USBJoystickChData[] = {
   YAML_IDX,
-  YAML_ENUM("mode", 8, enum_USBJoystickCh),
+  YAML_ENUM("mode", 5, enum_USBJoystickCh),
+  YAML_UNSIGNED( "switch_pos", 3 ),
   YAML_END
 };
 static const struct YamlNode struct_LimitData[] = {
