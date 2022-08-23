@@ -368,3 +368,11 @@ struct usbReport_t usbReport()
   return res;
 }
 
+void onUSBJoystickModelChanged()
+{
+  if (!usbJoystickActive()) return;
+
+  if (setupUSBJoystick()) {
+    usbJoystickRestart();
+  }
+}

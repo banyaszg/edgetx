@@ -41,6 +41,8 @@ int isUSBJoystickChannelFree(int except_idx, uint8_t id);
 // Return value (true = description changed, false = desc. update not needed)
 int setupUSBJoystick();
 
+void onUSBJoystickModelChanged();
+
 #ifdef __cplusplus
 extern "C" {
 #endif

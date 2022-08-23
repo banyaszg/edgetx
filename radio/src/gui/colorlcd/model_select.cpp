@@ -26,6 +26,7 @@
 #include "libopenui.h"
 #include "standalone_lua.h"
 #include "str_functions.h"
+#include "usb_joystick.h"
 
 #if LCD_W > LCD_H
 constexpr int MODEL_CELLS_PER_LINE = 3;
@@ -509,6 +510,10 @@ class ModelCategoryPageBody : public FormWindow
               loadModel(g_eeGeneral.currModelFilename, false);
               storageDirty(EE_GENERAL);
               storageCheck(true);
+
+#if defined(STM32) && !defined(SIMU)
+              onUSBJoystickModelChanged();
+#endif
 
               modelslist.setCurrentModel(model);
               modelslist.setCurrentCategory(category);

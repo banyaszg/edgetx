@@ -107,6 +107,16 @@ void usbStop()
   USBD_DeInit(&USB_OTG_dev);
 }
 
+void usbJoystickRestart()
+{
+  if (getSelectedUsbMode() != USB_JOYSTICK_MODE) return;
+
+  USBD_DeInit(&USB_OTG_dev);
+  DCD_DevDisconnect(&USB_OTG_dev);
+  DCD_DevConnect(&USB_OTG_dev);
+  USBD_Init(&USB_OTG_dev, USB_OTG_FS_CORE_ID, &USR_desc, &USBD_HID_cb, &USR_cb);
+}
+
 bool usbStarted()
 {
   return usbDriverStarted;
@@ -122,40 +132,6 @@ bool usbStarted()
 */
 void usbJoystickUpdate()
 {
-/*  static uint8_t HID_Buffer[HID_IN_PACKET];
-
-  // test to se if TX buffer is free
-  if (USBD_HID_SendReport(&USB_OTG_dev, 0, 0) == USBD_OK) {
-    //buttons
-    HID_Buffer[0] = 0;
-    HID_Buffer[1] = 0;
-    HID_Buffer[2] = 0;
-    for (int i = 0; i < 8; ++i) {
-      if ( channelOutputs[i+8] > 0 ) {
-        HID_Buffer[0] |= (1 << i);
-      }
-      if ( channelOutputs[i+16] > 0 ) {
-        HID_Buffer[1] |= (1 << i);
-      }
-      if ( channelOutputs[i+24] > 0 ) {
-        HID_Buffer[2] |= (1 << i);
-      }
-    }
-
-    //analog values
-    //uint8_t * p = HID_Buffer + 1;
-    for (int i = 0; i < 8; ++i) {
-
-      int16_t value = channelOutputs[i] + 1024;
-      if ( value > 2047 ) value = 2047;
-      else if ( value < 0 ) value = 0;
-      HID_Buffer[i*2 +3] = static_cast<uint8_t>(value & 0xFF);
-      HID_Buffer[i*2 +4] = static_cast<uint8_t>((value >> 8) & 0x07);
-
-    }
-    USBD_HID_SendReport(&USB_OTG_dev, HID_Buffer, HID_IN_PACKET);
-  }*/
-  
   // test to se if TX buffer is free
   if (USBD_HID_SendReport(&USB_OTG_dev, 0, 0) == USBD_OK) {
     usbReport_t ret = usbReport();

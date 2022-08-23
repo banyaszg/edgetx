@@ -89,59 +89,6 @@ static uint8_t  USBD_HID_DataIn (void  *pdev, uint8_t epnum);
     #pragma data_alignment=4   
   #endif
 #endif /* USB_OTG_HS_INTERNAL_DMA_ENABLED */ 
-/*
-  This USB HID endpoint report description defines a device with:
-    * 24 digital buttons
-    * 8 analog axes with 8bit resolution
-
-  Repot packet described as C struct is:
-
-  struct {
-    uint8_t buttons1; //bit 0 - button 1, bit 1 - button 2, ..., mapped to channels 9-16, on if channel > 0
-    uint8_t buttons2; // mapped to channels 17-24, on if channel > 0
-    uint8_t buttons3; // mapped to channels 25-32, on if channel > 0
-    uint8_t X;  //analog value, mapped to channel 1
-    uint8_t Y;  //analog value, mapped to channel 2
-    uint8_t Z;  //analog value, mapped to channel 3
-    uint8_t Rx; //analog value, mapped to channel 4
-    uint8_t Ry  //analog value, mapped to channel 5
-    uint8_t Rz; //analog value, mapped to channel 6
-    uint8_t S1; //analog value, mapped to channel 7
-    uint8_t S2; //analog value, mapped to channel 8
-  }
-*/ 
-/*__ALIGN_BEGIN static const uint8_t HID_JOYSTICK_ReportDesc[] __ALIGN_END =
-{
-    0x05, 0x01,                    //     USAGE_PAGE (Generic Desktop)
-    0x09, 0x05,                    //     USAGE (Game Pad)
-    0xa1, 0x01,                    //     COLLECTION (Application)
-    0xa1, 0x00,                    //       COLLECTION (Physical)
-    0x05, 0x09,                    //         USAGE_PAGE (Button)
-    0x19, 0x01,                    //         USAGE_MINIMUM (Button 1)
-    0x29, 0x18,                    //         USAGE_MAXIMUM (Button 24)
-    0x15, 0x00,                    //         LOGICAL_MINIMUM (0)
-    0x25, 0x01,                    //         LOGICAL_MAXIMUM (1)
-    0x95, 0x18,                    //         REPORT_COUNT (24)
-    0x75, 0x01,                    //         REPORT_SIZE (1)
-    0x81, 0x02,                    //         INPUT (Data,Var,Abs)
-    0x05, 0x01,                    //         USAGE_PAGE (Generic Desktop)
-    0x09, 0x30,                    //         USAGE (X)
-    0x09, 0x31,                    //         USAGE (Y)
-    0x09, 0x32,                    //         USAGE (Z)
-    0x09, 0x33,                    //         USAGE (Rx)
-    0x09, 0x34,                    //         USAGE (Ry)
-    0x09, 0x35,                    //         USAGE (Rz)
-    0x09, 0x36,                    //         USAGE (Slider)
-    0x09, 0x36,                    //         USAGE (Slider)
-    0x16, 0x00, 0x00,              //         LOGICAL_MINIMUM (0)
-    0x26, 0xFF, 0x07,              //         LOGICAL_MAXIMUM (2047)
-    0x75, 0x10,                    //         REPORT_SIZE (16)
-    0x95, 0x08,                    //         REPORT_COUNT (8)
-    0x81, 0x02,                    //         INPUT (Data,Var,Abs)
-    0xc0,                          //       END_COLLECTION
-    0xc0                           //     END_COLLECTION
-};*/
-
 
 /** @defgroup USBD_HID_Private_Variables
   * @{
@@ -226,7 +173,7 @@ __ALIGN_BEGIN static /*const*/ uint8_t USBD_HID_CfgDesc[USB_HID_CONFIG_DESC_SIZ]
   0x00,         /*bCountryCode: Hardware target country*/
   0x01,         /*bNumDescriptors: Number of HID class descriptors to follow*/
   0x22,         /*bDescriptorType*/
-  /*sizeof(HID_JOYSTICK_ReportDesc)*/ 0,/*wItemLength: Total length of Report descriptor*/
+  0,/*wItemLength: Total length of Report descriptor*/
   0x00,
   /******************** Descriptor of Mouse endpoint ********************/
   /* 27 */
@@ -349,8 +296,6 @@ static uint8_t  USBD_HID_Setup (void  *pdev,
     case USB_REQ_GET_DESCRIPTOR: 
       if( req->wValue >> 8 == HID_REPORT_DESC)
       {
-        /*len = MIN(sizeof(HID_JOYSTICK_ReportDesc) , req->wLength);
-        pbuf = HID_JOYSTICK_ReportDesc; // wiiccReportDescriptor; //*/
         struct usbReport_t ret = usbReportDesc();
         len = MIN(ret.size, req->wLength);
         pbuf = ret.ptr;
